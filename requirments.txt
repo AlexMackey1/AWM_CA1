@@ -1,0 +1,24 @@
+#Existing dependencies for the Django web mapping project Week 1 & 2
+
+asgiref==3.9.1
+Django==4.2.7
+django-cors-headers==4.8.0
+djangorestframework==3.16.1
+GDAL @ file:///C:/Users/alexs/Downloads/gdal-3.11.1-cp313-cp313-win_amd64.whl#sha256=a233e533689df3388ca990f11306dc9e68bf080c34b7460dc4b954500528187e
+psycopg2-binary==2.9.10
+sqlparse==0.5.3
+tzdata==2025.2
+
+# New API-specific requirements
+djangorestframework>=3.14.0
+djangorestframework-gis>=1.0.0
+django-filter>=23.0
+django-cors-headers>=4.3.0
+drf-spectacular>=0.26.0  # API documentation
+django-extensions>=3.2.0
+requests>=2.31.0  # For testing external API calls
+
+# Testing and development
+pytest>=7.4.0
+pytest-django>=4.5.0
+factory-boy>=3.3.0
