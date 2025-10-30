@@ -76,3 +76,48 @@ header p {
     font-size: 0.85rem;
     color: #333;
 }
+
+/* === Route Info Panel === */
+#routePanel {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 260px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  font-size: 0.9rem;
+  z-index: 1200;
+  transition: all 0.3s ease-in-out;
+}
+
+#routePanel.hidden {
+  display: none;
+}
+
+#routePanel h3 {
+  margin: 0 0 8px 0;
+  color: #0074D9;
+  font-size: 1rem;
+}
+
+#routePanel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#routePanel li {
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#routePanel li:hover {
+  background-color: #f2f6ff;
+}
+
