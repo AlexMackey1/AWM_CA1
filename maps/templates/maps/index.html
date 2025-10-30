@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Connections Map</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { height: 100vh; width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+const map = L.map('map').setView([53.35, -6.26], 5);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// 1) Fetch airports with robust logging
+fetch('/api/airports/')
+  .then(res => {
+    console.log('[AIRPORTS] HTTP status:', res.status, res.statusText);
+    console.log('[AIRPORTS] Content-Type:', res.headers.get('content-type'));
+    return res.json();
+  })
+  .then(data => {
+    console.log('[AIRPORTS] Raw data:', data);
+
+    // 2) Sanity checks on structure
+    if (!data || (data.type !== 'FeatureCollection') || !Array.isArray(data.features)) {
+      console.error('[AIRPORTS] Unexpected GeoJSON shape. Expected FeatureCollection with features[].');
+      return;
+    }
+    console.log('[AIRPORTS] Feature count:', data.features.length);
+
+    if (data.features.length > 0) {
+      const f0 = data.features[0];
+      console.log('[AIRPORTS] First feature (properties):', f0.properties);
+      console.log('[AIRPORTS] First feature (geometry):', f0.geometry);
+      if (f0.geometry && Array.isArray(f0.geometry.coordinates)) {
+        console.log('[AIRPORTS] First coords [lon, lat] expected:', f0.geometry.coordinates);
+      }
+    }
+
+    // 3) Build the layer with extra logging
+    const airportLayer = L.geoJSON(data, {
+      pointToLayer: (feature, latlng) => {
+        // Log every feature’s latlng as Leaflet interprets it
+        console.log('[AIRPORTS] pointToLayer latlng:', latlng);
+        return L.circleMarker(latlng, {
+          radius: 6,
+          fillColor: "#0074D9",
+          color: "#fff",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.9
+        });
+      },
+      onEachFeature: (feature, layer) => {
+        const props = feature.properties || {};
+        layer.bindPopup(`
+          <b>${props.name ?? ''}</b><br>
+          ${props.city ?? ''}, ${props.country ?? ''}<br>
+          Code: ${props.iata_code ?? ''}
+        `);
+        layer.on('click', () => loadRoutes(props.iata_code));
+      }
+    }).addTo(map);
+
+    // 4) Fit to bounds and log them
+    try {
+      const b = airportLayer.getBounds();
+      console.log('[AIRPORTS] Layer bounds:', b);
+      if (b.isValid && b.isValid()) {
+        map.fitBounds(b);
+      } else {
+        console.warn('[AIRPORTS] Bounds not valid (maybe empty layer).');
+      }
+    } catch (e) {
+      console.warn('[AIRPORTS] Could not compute bounds:', e);
+    }
+  })
+  .catch(err => {
+    console.error('[AIRPORTS] Fetch or parse error:', err);
+  });
+
+function loadRoutes(iata) {
+  fetch(`/api/routes/?origin=${iata}`)
+    .then(res => {
+      console.log('[ROUTES] HTTP status:', res.status, res.statusText);
+      return res.json();
+    })
+    .then(data => {
+      console.log('[ROUTES] Raw data:', data);
+      if (window.routeLayer) map.removeLayer(window.routeLayer);
+      window.routeLayer = L.geoJSON(data, { style: { color: 'red', weight: 2 } }).addTo(map);
+      try {
+        const b = window.routeLayer.getBounds();
+        console.log('[ROUTES] Layer bounds:', b);
+        if (b.isValid && b.isValid()) map.fitBounds(b);
+      } catch (e) {
+        console.warn('[ROUTES] Could not compute route bounds:', e);
+      }
+    })
+    .catch(err => console.error('[ROUTES] Fetch or parse error:', err));
+}
+</script>
+
+</body>
+</html>
