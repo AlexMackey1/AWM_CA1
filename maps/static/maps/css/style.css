@@ -44,7 +44,7 @@ header p {
 #controls {
     position: absolute;
     top: 120px;
-    left: 20px;
+    right: 20px;              
     background: rgba(255, 255, 255, 0.95);
     padding: 12px;
     border-radius: 8px;
@@ -52,6 +52,7 @@ header p {
     z-index: 1000;
     width: 220px;
 }
+
 
 #clearBtn {
     display: block;
