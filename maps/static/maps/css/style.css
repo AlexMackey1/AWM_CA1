@@ -1,0 +1,77 @@
+/* --- Page layout fixes --- */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+}
+
+/* --- Header --- */
+header {
+    background: linear-gradient(90deg, #0074D9, #00a1e4);
+    color: white;
+    text-align: center;
+    padding: 15px 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+header p {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* --- Map container --- */
+#map {
+    position: relative;
+    height: calc(100vh - 110px); /* full height minus header */
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-top: 2px solid #0074D9;
+    z-index: 1;
+}
+
+/* --- Controls box --- */
+#controls {
+    position: absolute;
+    top: 120px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 1000;
+    width: 220px;
+}
+
+#clearBtn {
+    display: block;
+    width: 100%;
+    background-color: #ff4136;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+#clearBtn:hover {
+    background-color: #e0382f;
+}
+
+#infoBox {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #333;
+}
